@@ -1,6 +1,6 @@
 # Helpik
 
-Веб-приложение для наблюдения за самочувствием пациента: ежедневный опрос, динамика, назначения лекарств, сообщения и кабинет врача. Интерфейс рассчитан на мобильные устройства.
+Веб-приложение для наблюдения за самочувствием пациента: ежедневный опрос, динамика, назначения лекарств, сообщения и кабинет врача.
 
 - `site/` — Django, интерфейс, миграции и тесты.
 - `site/quiz/ml/sitec-v1.json` — параметры моделей для работы приложения без sklearn.
@@ -13,25 +13,12 @@
 Создайте виртуальное окружение, активируйте его и установите зависимости:
 
 ```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\your_venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 ```
-
-Если PowerShell не разрешает активацию, используйте `& .\.venv\Scripts\python.exe` вместо `python` в командах ниже. Активация для такого запуска не требуется.
+Замените your venv на название вашего виртуального окружения.
 
 Настройте отдельную локальную базу и создайте секретный ключ. Ключ сохранится только на вашем компьютере и будет использоваться при следующих запусках:
-
-```powershell
-$env:APP_ENV = 'demo'
-$env:DJANGO_DB_PATH = Join-Path (Get-Location) 'site/runtime/demo.sqlite3'
-$AppKeyFile = Join-Path (Get-Location) 'site/runtime/django-secret.txt'
-if (-not (Test-Path -LiteralPath $AppKeyFile)) {
-    New-Item -ItemType Directory -Path 'site/runtime' -Force | Out-Null
-    python -c "import secrets; from pathlib import Path; Path('site/runtime/django-secret.txt').write_text(secrets.token_urlsafe(48), encoding='utf-8')"
-}
-$env:DJANGO_SECRET_KEY = (Get-Content -LiteralPath $AppKeyFile -Raw).Trim()
-```
 
 Подготовьте базу, первый аккаунт модератора, опрос и ключи уведомлений:
 
