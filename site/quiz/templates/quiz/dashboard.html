@@ -1,0 +1,34 @@
+{% extends "quiz/base.html" %}
+
+{% block title %}Мои пациенты{% endblock %}
+
+{% block content %}
+<h1>Мои пациенты</h1>
+<p><a href="{% url 'invitations' %}">Пригласить пациента</a></p>
+
+{% if patients %}
+<table class="patients">
+    <thead>
+        <tr>
+            <th>Пациент</th>
+            <th>Прохождений</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in patients %}
+        <tr>
+            <td>{{ row.patient.username }}</td>
+            <td>{{ row.records|length }}</td>
+            <td>
+                <a href="{% url 'patient_records' row.patient.pk %}">Посмотреть историю</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>У вас пока нет пациентов.</p>
+{% endif %}
+
+{% endblock %}

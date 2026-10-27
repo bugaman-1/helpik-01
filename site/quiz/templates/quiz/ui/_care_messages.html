@@ -1,0 +1,3 @@
+
+<form method="post" action="{% url 'care_message' care_patient.pk %}" class="auth-form">{% csrf_token %}{{ message_form.as_p }}<button class="primary">Отправить</button></form>
+{% for item in care_messages %}<article class="list-item"><div><b>{{ item.author.get_full_name|default:item.author.username }}</b> · {{ item.created_at|date:'d.m.Y H:i' }} · {{ item.get_kind_display }}<p>{{ item.text|linebreaksbr }}</p></div></article>{% empty %}<p class="empty">Сообщений пока нет.</p>{% endfor %}

@@ -1,0 +1,25 @@
+{% if response_quality %}
+<section class="panel response-quality" id="response-quality">
+  <div class="heading-row"><h2>Доверие к прохождению</h2><span class="quality-status {{ response_quality.trust.level }}">{{ response_quality.trust.label }}</span></div>
+
+  <div class="quality-scale trust-scale" role="img" aria-label="Доверие к прохождению: {{ response_quality.trust.label }}">
+    <span class="{% if response_quality.trust.level == 'review' %}active{% endif %}">Низкое</span>
+    <span class="{% if response_quality.trust.level == 'notice' %}active{% endif %}">Сниженное</span>
+    <span class="{% if response_quality.trust.level == 'ordinary' %}active{% endif %}">Без выраженных сомнений</span>
+  </div>
+  {% if response_quality.trust.signals %}<ul class="trust-signals">{% for signal in response_quality.trust.signals %}<li>{{ signal.title }}</li>{% endfor %}</ul>{% endif %}
+  <details class="trust-details">
+    <summary>Подробнее</summary>
+    {% include 'quiz/ui/_sitec_result.html' with model_result=response_quality.model_result %}
+    <h3>Особенности прохождения</h3>
+    <dl class="quality-metrics">
+      {% if response_quality.model_result.computed %}<div><dt>Активное время прохождения</dt><dd>{{ response_quality.model_result.observations.duration_seconds }} с</dd></div>{% endif %}
+      <div><dt>{% if response_quality.trust.average %}Среднее время на вопрос{% else %}Медиана выбора ответа{% endif %}</dt><dd>{% if response_quality.trust.seconds != None %}{{ response_quality.trust.seconds }} с{% else %}Нет замера{% endif %}</dd></div>
+      <div><dt>Контрольная пара · разница</dt><dd>{% if response_quality.trust.difference != None %}{{ response_quality.trust.difference }} / 3{% else %}Нет данных{% endif %}</dd></div>
+      <div><dt>Возвраты / исправления</dt><dd>{{ response_quality.trust.revisits }} / {{ response_quality.trust.changes }}</dd></div>
+    </dl>
+
+  </details>
+
+</section>
+{% endif %}

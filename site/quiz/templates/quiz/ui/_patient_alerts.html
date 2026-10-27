@@ -1,0 +1,36 @@
+{% if patient_alerts %}
+<section class="patient-alerts" id="patient-alerts" aria-label="Сигналы пациента">
+  <div class="patient-alerts-top">
+    <h2><span class="alert-mark" aria-hidden="true">!</span> Требует внимания врача</h2>
+    <a class="btn primary" href="#patient-messages" data-contact-patient>Связаться с пациентом</a>
+  </div>
+  <ul class="patient-alert-summary">
+    {% for group in patient_alert_groups %}
+    <li class="{{ group.priority }}">
+      <span>{{ group.alert.evidence_snapshot.title|default:'Сигнал пациента' }}{% if group.count > 1 %} <span class="alert-repeat">×{{ group.count }}</span>{% endif %}</span>
+      <time datetime="{{ group.alert.created_at|date:'c' }}">{{ group.alert.created_at|date:'d.m H:i' }}</time>
+    </li>
+    {% endfor %}
+  </ul>
+  <details class="alerts-history">
+    <summary>Подробности <span class="muted">· {{ patient_alerts|length }}</span></summary>
+    <div class="alerts-history-list">
+      {% for alert in patient_alerts %}
+      <details class="alert-detail {{ alert.evidence_snapshot.priority }}" id="alert-{{ alert.pk }}">
+        <summary><span>{{ alert.evidence_snapshot.title|default:'Сигнал пациента' }}</span><span class="muted small-text">{{ alert.created_at|date:'d.m.Y H:i' }} · {{ alert.get_status_display }}</span></summary>
+        <p>{{ alert.evidence_snapshot.message }}</p>
+        {% if alert.evidence_snapshot.session_id %}<a href="{% url 'survey_detail' alert.evidence_snapshot.session_id %}">Открыть ответы</a>{% endif %}
+        <details class="alert-close"><summary>Закрыть сигнал после оценки</summary>
+          <form method="post" action="{% url 'alert_review' alert.pk %}" class="auth-form">{% csrf_token %}
+            <input type="hidden" name="status" value="closed">
+            <label for="alert-note-{{ alert.pk }}">Результат оценки</label>
+            <textarea id="alert-note-{{ alert.pk }}" name="note" rows="2" required maxlength="500"></textarea>
+            <button>Закрыть сигнал</button>
+          </form>
+        </details>
+      </details>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}

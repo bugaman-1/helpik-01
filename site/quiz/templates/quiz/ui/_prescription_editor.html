@@ -1,0 +1,20 @@
+{% load static %}<link rel="stylesheet" href="{% static 'quiz/medications.css' %}?v=20261027-compact">
+<form method="post" action="{% url 'care_prescribe' care_patient.pk %}" class="auth-form" id="prescription-builder" data-check-url="{% url 'care_medication_check' care_patient.pk %}">{% csrf_token %}
+{{ prescription_form.non_field_errors }}
+{% for field in prescription_form %}{% if field.is_hidden %}{{ field }}{% else %}
+<div class="field" {% if field.name == 'interaction_ack' %}id="interaction-ack-field" {% if not medication_check.needs_ack %}hidden{% endif %}{% endif %}>
+{% if field.name == 'name' %}
+<label for="{{ field.id_for_label }}">{{ field.label }}</label><div class="drug-name-row">{{ field }}<button type="button" id="drug-catalog-toggle" aria-expanded="false" aria-controls="drug-catalog">Выбрать из каталога</button></div>
+<div id="drug-catalog" class="drug-catalog" hidden><label for="drug-group">Группа препаратов</label><select id="drug-group"><option value="">Все группы</option></select><div class="drug-legend"><span class="drug-badge blocked">Противопоказание</span><span class="drug-badge warning">Осторожность</span><span class="drug-badge note">Сведения об этой паре</span><span class="drug-badge unknown">Недостаточно данных</span></div><div id="drug-options" role="listbox" aria-label="Каталог препаратов"></div><p id="drug-options-status" class="small-text" aria-live="polite"></p></div>
+<p id="drug-check-loading" class="small-text muted" role="status" hidden></p>
+{% include 'quiz/ui/_drug_review.html' %}
+<div id="drug-alternatives" class="drug-alternatives" hidden></div>
+
+<noscript><p class="notice">Название можно ввести вручную. Перед сохранением сервер проверит сочетания; при предупреждении покажет его и запросит подтверждение.</p></noscript>
+{% elif field.field.widget.input_type == 'checkbox' %}<label for="{{ field.id_for_label }}">{{ field }} {{ field.label }}</label>
+{% else %}<label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% endif %}
+{% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}{{ field.errors }}
+</div>{% endif %}{% endfor %}
+<button class="primary" id="prescription-submit">Подтвердить назначение</button>
+{% if editing %}<a href="{% url 'patient_records' care_patient.pk %}#patient-medications">Отменить редактирование</a>{% endif %}
+</form>{{ medication_picker|json_script:'medication-picker-data' }}<script src="{% static 'quiz/medication_picker.js' %}?v=20261027-compact" defer></script>

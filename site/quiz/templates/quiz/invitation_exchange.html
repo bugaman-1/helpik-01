@@ -1,0 +1,6 @@
+{% extends 'quiz/base.html' %}{% load static %}{% block title %}Регистрация · Компас{% endblock %}{% block content %}
+<h1>{% if user.is_authenticated %}Добавить врача{% else %}Создать аккаунт{% endif %}</h1>
+{% if prototype_self_service and not user.is_authenticated %}<nav class="chips" aria-label="Роль при регистрации"><a class="chip selected" href="{% url 'register_patient' %}">Я пациент</a><a class="chip" href="{% url 'register_doctor' %}">Я врач</a></nav><p><a class="btn primary" href="{% url 'register_patient' %}">Зарегистрироваться без кода</a></p>{% endif %}
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+<form method="post" class="auth-form">{% csrf_token %}<label for="invite-token">Код от врача</label><input id="invite-token" type="text" name="token" value="{{ demo_token|default:'' }}" maxlength="43" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Вставьте полный код" required><button type="submit" class="primary">Продолжить →</button></form>
+{% if demo_token %}<p class="help">Тестовый код пациента подставлен.</p>{% endif %}<p class="auth-hint">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p><script src="{% static 'quiz/invitation.js' %}" defer></script>{% endblock %}

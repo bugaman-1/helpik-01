@@ -1,0 +1,49 @@
+{% if months %}
+<div class="heatmap">
+    <div class="heatmap-months">
+        {% for m in months %}
+        <div class="month-col">
+            <div class="month-head">{{ m.name }}</div>
+            <div class="month-cells">
+                {% for cell in m.cells %}
+                    {% if cell.empty %}
+                    <span class="heatmap-day empty"></span>
+                    {% else %}
+                    <span class="heatmap-day {{ cell.mood_class }}" title="{{ cell.date }}: {{ cell.emoji|default:'нет ответов' }}"></span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="heatmap-legend">
+        <span>😞</span>
+        <span class="heatmap-day neg"></span>
+        <span>😐</span>
+        <span class="heatmap-day neu"></span>
+        <span>😄</span>
+        <span class="heatmap-day pos"></span>
+        <span>нет данных</span>
+        <span class="heatmap-day none"></span>
+    </div>
+</div>
+<p class="heatmap-stats">
+    Дней с ответами: <strong>{{ activity_days }}</strong> ·
+    Среднее настроение за год: {{ activity_emoji }}
+</p>
+
+<div class="monthly-summary">
+    {% for m in monthly_avg %}
+    <div class="monthly-row">
+        <span class="monthly-name">{{ m.name }}</span>
+        <span class="monthly-bar">
+            <span class="monthly-fill mood-{{ m.bar_class }}"></span>
+        </span>
+        <span class="monthly-emoji">{{ m.emoji }}</span>
+        <span class="monthly-days">{{ m.days }} дн.</span>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="heatmap-stats">Прохождений пока нет.</p>
+{% endif %}

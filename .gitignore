@@ -1,0 +1,62 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*.json
+*credentials*.txt
+*secret*.txt
+*.har
+.auth/
+
+# Environments and generated files
+.venv*/
+venv/
+__pycache__/
+*.py[cod]
+node_modules/
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+Thumbs.db
+
+# User records and server state
+runtime/
+backups/
+media/
+uploads/
+staticfiles/
+*.sqlite*
+*.db
+*.db-*
+*.sql
+*.dump
+*.log
+*.pid
+*.zip
+*.7z
+*.exe
+
+# Training data and generated model bundles; inference JSON is versioned
+sitec/data/raw/
+sitec/data/processed/*
+!sitec/data/processed/question_schema.json
+sitec/models/*
+!sitec/models/requirements-model.txt
+*.joblib
+*.pkl
+*.pickle
+
+# Local tools and presentation material
+.codex/
+.agents/
+tmp/
+output/
+outputs/
+*.pptx
+*.pdf
+*.xlsx

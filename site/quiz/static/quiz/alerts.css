@@ -1,0 +1,20 @@
+.patient-alerts{padding:16px 20px;margin-bottom:20px}
+.patient-alerts-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.patient-alerts-top h2{display:flex;align-items:center;gap:9px;margin:0;font-size:18px;line-height:1.35}
+.patient-alerts-top .btn{flex-shrink:0;padding:9px 14px;font-size:13px;min-height:40px}
+.patient-alert-summary{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.patient-alert-summary li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;font-size:14px;line-height:1.4}
+.patient-alert-summary .urgent>span{color:#a13025;font-weight:650}
+.patient-alert-summary time{flex-shrink:0;color:var(--muted);font-size:12px}
+.alert-repeat{font-size:12px;color:var(--muted);white-space:nowrap;margin-left:4px}
+.alerts-history{margin:12px 0 0;padding-top:8px;border-top:1px solid var(--line)}
+.alerts-history>summary{font-size:13px;min-height:28px}
+.alerts-history-list{margin-top:8px}
+.alert-detail{padding:9px 0;margin:0;border-top:1px solid var(--line)}
+.alert-detail.urgent{padding:9px 0 9px 12px}
+.alert-detail>summary{font-size:14px;line-height:1.4;min-height:28px}
+.alert-detail>summary>span:last-child{display:inline-block;margin-left:10px}
+.alert-detail p{font-size:14px;margin:10px 0}
+.alert-detail .alert-close{margin:10px 0 0}
+.alert-close>summary{font-size:13px}
+@media(max-width:760px){.patient-alerts{padding:14px}.patient-alerts-top{align-items:stretch;flex-direction:column;gap:10px}.patient-alerts-top h2{font-size:17px}.patient-alerts-top .btn{text-align:center;align-self:flex-start}.patient-alert-summary li{align-items:start;gap:8px;font-size:13px}.patient-alert-summary time{font-size:11px}.alert-detail>summary>span:last-child{display:block;margin:3px 0 0 16px}}

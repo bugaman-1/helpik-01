@@ -1,0 +1,15 @@
+{% if model_result %}
+<div class="sitec-result" id="sitec-result">
+  <h3>Оценки моделей</h3>
+  {% if model_result.computed %}
+  <div class="quality-cards model-numbers">
+    <div class="quality-card"><span class="muted small-text">Необходимость консультации специалиста</span><strong>{{ model_result.attention_percent|floatformat:1 }} <small>%</small></strong></div>
+    <div class="quality-card"><span class="muted small-text">Достоверность прохождения</span><strong>{{ model_result.trust_percent|floatformat:1 }} <small>%</small></strong></div>
+  </div>
+
+  {% if model_result.speed_alert %}<p class="small-text">Сработало правило скорости: среднее время вне диапазона 1,5–20 с. Результат требует внимания независимо от числа первой модели.</p>{% endif %}
+
+  {% else %}<p class="small-text muted">{{ model_result.reason }} Числовые оценки недоступны.</p>{% endif %}
+
+</div>
+{% else %}<p class="small-text muted">Для этой версии опроса числовые оценки моделей не рассчитываются.</p>{% endif %}

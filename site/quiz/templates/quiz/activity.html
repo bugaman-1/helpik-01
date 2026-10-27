@@ -1,0 +1,39 @@
+{% extends "quiz/base.html" %}
+
+{% block card_class %}card-wide{% endblock %}
+
+{% block title %}Моя активность{% endblock %}
+
+{% block content %}
+<p class="progress"><a href="{% url 'home' %}">← На главную</a></p>
+<h1>Моя активность</h1>
+<p>Исторические агрегаты демонстрационного опроса. Это не клиническая оценка; отдельных ответов в старых записях нет.</p>
+
+{% include "quiz/_activity_heatmap.html" %}
+
+{% if records %}
+<h2>История прохождений</h2>
+<table class="records">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>😄</th>
+            <th>😐</th>
+            <th>😞</th>
+            <th>Итог</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.created_at|date:"d.m.Y H:i" }}</td>
+            <td>{{ record.positive_count }}</td>
+            <td>{{ record.neutral_count }}</td>
+            <td>{{ record.negative_count }}</td>
+            <td>{{ record.positive_count }} / {{ record.neutral_count }} / {{ record.negative_count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,2 @@
+{% extends "quiz/base.html" %}{% block content %}<div class="admin-list"><h1>Административный журнал</h1><p>Последние 200 событий. Медицинские ответы здесь не отображаются.</p>
+{% for event in events %}<p>{{ event.created_at }} · {{ event.kind }} · субъект №{{ event.subject_id }} · автор №{{ event.actor_id }} · {{ event.reason }}</p>{% endfor %}</div>{% endblock %}

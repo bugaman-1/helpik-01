@@ -1,0 +1,31 @@
+{% extends "quiz/base.html" %}{% load static %}{% block content %}
+<a class="back-link" href="{% if is_doctor %}{% url 'patient_records' run.patient_id %}{% else %}{% url 'home' %}{% endif %}">← {% if is_doctor %}Карточка пациента{% else %}Сегодня{% endif %}</a>
+<div class="page-heading"><h1>{{ run.questionnaire_version.questionnaire.title }}</h1><span id="run-status" class="badge neutral">{{ status_label }}</span> <span class="muted">{{ run.started_at|date:"j E Y, H:i" }}</span></div>
+{% if writable %}<p>{{ definition.instruction }}</p>{% if screening_result %}<details class="telemetry-choice"><summary>Время заполнения и исправления</summary><p>Сохраняются время выбора ответа, возвраты и исправления — они помогают врачу уточнять ответы. Время в свёрнутой вкладке не учитывается. Можно отключить сбор, продолжив опрос.</p><form method="post" action="{% url 'survey_consent' run.pk %}">{% csrf_token %}<input type="hidden" name="enabled" value="{{ run.telemetry_enabled|yesno:'false,true' }}"><button>{% if run.telemetry_enabled %}Отключить сбор времени{% else %}Включить сбор времени{% endif %}</button></form></details>{% endif %}<p class="small-text muted">Все вопросы обязательны. Можно вернуться к ответу и изменить его до завершения опроса.</p>{% endif %}
+{% if not writable %}<section class="notice"><h2>{% if run.status == 'submitted' %}Опрос завершён{% else %}Сохранённые ответы{% endif %}</h2><p>Сохранено {{ saved_count }} из {{ rows|length }} ответов.{% if run.status == 'submitted' %} Ответы доступны наблюдающим врачам.{% endif %}</p></section>{% endif %}
+{% if screening_result %}<p class="muted small-text">{% if screening_result.kind == 'checkin' %}Самочувствие — сегодня. Тревога — прямо сейчас.{% else %}PHQ-9 / GAD-7 · последние две недели.{% endif %}</p>{% if not writable %}{% include 'quiz/ui/_screening_result.html' %}{% if is_doctor %}{% include 'quiz/ui/_response_quality.html' %}{% endif %}{% endif %}{% endif %}
+<div id="survey-app" data-events-url="{% url 'survey_events' run.pk %}" data-telemetry="{{ run.telemetry_enabled|yesno:'true,false' }}" data-generation="{{ run.answer_generation }}">
+{% if writable %}<p id="save-status" role="status" aria-live="polite">{% if saved_count %}Сохранено{% else %}Выберите ответ{% endif %}</p><p id="telemetry-status" hidden></p>
+<p id="conflict-help" hidden><a href="{% url 'survey_detail' run.pk %}" target="_blank" rel="noopener">Открыть сохранённые ответы в новой вкладке</a></p>{% endif %}
+{% for row in rows %}
+{% if not writable and row.question.code == 'A01' %}<h2>Дополнительные вопросы</h2>{% endif %}
+<section id="question-{{ row.question.code }}" class="survey-question" data-additional="{{ row.additional|yesno:'true,false' }}">
+{% if writable %}<form class="answer-form" method="post" action="{% url 'survey_answer' run.pk %}" data-code="{{ row.question.code }}" data-required="{{ row.question.required|yesno:'true,false' }}" data-saved="{{ row.saved|yesno:'true,false' }}" data-revision-id="{{ row.answer.pk|default:'' }}">{% csrf_token %}
+<input type="hidden" name="question_code" value="{{ row.question.code }}"><input type="hidden" name="expected_revision" value="{{ row.answer.revision|default:0 }}"><input type="hidden" name="client_event_id" value="{{ row.key }}">
+<fieldset>{% if row.question.code == 'PHQ01' %}<p class="eyebrow">Самочувствие · 1 из 2</p>{% elif row.question.code == 'GAD01' %}<p class="eyebrow">Тревога · 2 из 2</p>{% endif %}<legend>{{ row.question.text }}</legend>
+{% if row.question.code == 'D07' %}<p class="muted">Вспомните прошедшую ночь.</p>{% endif %}
+{% if row.na_hint %}<p class="muted">{{ row.na_hint }}</p>{% endif %}
+{% if row.condition_text %}<p>{{ row.condition_text }} Иначе выберите «Не применимо».</p>{% endif %}
+{% for option in row.question.options %}<label><input type="radio" name="choice" value="option:{{ option.code }}" {% if row.answer.state == 'known' and row.answer.value == option.code %}checked{% endif %}><span>{{ option.label }}</span></label>{% endfor %}
+{% if not row.question.required %}<label><input type="radio" name="choice" value="missing" {% if row.answer.state == 'missing' %}checked{% endif %}><span>Пропустить необязательный вопрос</span></label>{% endif %}
+{% if row.question.allow_not_applicable %}<label><input type="radio" name="choice" value="not_applicable" {% if row.answer.state == 'not_applicable' %}checked{% endif %}><span>Не применимо</span></label>{% endif %}
+<button class="btn" type="submit">Сохранить ответ</button></fieldset>
+<p class="answer-status">{% if row.saved %}Сохранено{% else %}Ответ ещё не сохранён{% endif %}</p></form>
+{% else %}<h3>{{ forloop.counter }}. {{ row.question.text }}</h3><p>{{ row.label }}</p>{% endif %}
+</section>{% endfor %}
+{% if writable %}<form id="finish-form" method="post" action="{% url 'survey_finish' run.pk %}">{% csrf_token %}<input type="hidden" name="key" value="{{ submit_key }}"><input type="hidden" name="expected_generation" value="{{ run.answer_generation }}"><button class="btn" name="abandon" value="false">Завершить опрос</button></form><button id="retry-save" type="button" hidden>Повторить</button>{% endif %}
+</div>
+{% if not writable %}{% if is_doctor and safety_history %}<section class="notice warning"><h2>Ответы по вопросу безопасности</h2><ul>{% for revision in safety_history %}<li>{{ revision.question }}<br><strong>{{ revision.label }}</strong> · {{ revision.received_at|date:"j E Y, H:i" }}</li>{% endfor %}</ul></section>{% endif %}
+<details><summary>История ответов и исправлений</summary>{% for item in history %}<article class="record-card"><h3>{{ item.question }}</h3>{% if item.old %}<p>Было: {{ item.old }}</p><p>Стало: <b>{{ item.new }}</b></p>{% else %}<p>{{ item.new }}</p>{% endif %}<p class="muted">{{ item.at|date:"j E Y, H:i:s" }}</p></article>{% empty %}<p>Сохранённых ответов пока нет.</p>{% endfor %}</details>{% endif %}
+{% if owner %}<script src="{% static 'quiz/survey.js' %}?v=20261026-sitec1" defer></script><script src="{% static 'quiz/survey_presentation.js' %}?v=20261025-opros2" defer></script>{% endif %}
+{% endblock %}

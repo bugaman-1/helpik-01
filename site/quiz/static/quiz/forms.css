@@ -1,0 +1,8 @@
+textarea {
+  min-height: calc(3em + 26px);
+  height: calc(3em + 26px);
+  line-height: 1.5;
+  resize: vertical;
+  overflow-y: auto;
+}
+textarea.autosize { resize: none; overflow-y: hidden; }

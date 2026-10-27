@@ -1,0 +1,8 @@
+<div class="drug-check {{ medication_check.level }}" id="drug-check" {% if not prescription_form.name.value %}hidden{% endif %} role="status" aria-live="polite">
+{% if prescription_form.name.value %}<strong>{{ medication_check.label }}</strong><p>{{ medication_check.summary }}</p>
+{% if not medication_check.recognized %}<p>Название не распознано в каталоге. Автоматическая проверка для него недоступна.</p>{% endif %}
+{% for finding in medication_check.findings %}<article class="drug-finding {{ finding.level }}"><b>{{ finding.medicine }} · {{ finding.message }}</b><p>{{ finding.detail }}</p><div class="drug-sources">{% for source in finding.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>{% endfor %}</div></article>{% endfor %}
+{% if medication_check.unknown %}<p class="small-text">Недостаточно данных о сочетаниях с: {{ medication_check.unknown|join:', ' }}.</p>{% endif %}
+{% include 'quiz/ui/_drug_uncertainty.html' with check=medication_check %}
+{% endif %}
+</div>

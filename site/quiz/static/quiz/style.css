@@ -1,0 +1,407 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: linear-gradient(135deg, #e8f0fe, #f7e8fe);
+    color: #1f2933;
+}
+
+.card {
+    width: min(560px, calc(100% - 32px));
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 12px 40px rgba(31, 41, 51, 0.12);
+}
+
+.card-wide {
+    width: min(1100px, calc(100% - 32px));
+}
+
+h1 {
+    margin: 8px 0 20px;
+    font-size: 1.5rem;
+}
+
+.progress {
+    color: #6b7280;
+    margin: 0 0 12px;
+}
+
+.moods {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 24px 0;
+}
+
+.mood {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 8px;
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fafafa;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.1s ease, border-color 0.1s ease, background 0.1s ease;
+}
+
+.mood:hover {
+    transform: translateY(-3px);
+    border-color: #7c8cf8;
+    background: #f0f2ff;
+}
+
+.emoji {
+    font-size: 2.6rem;
+    line-height: 1;
+}
+
+.mood-label {
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: 0;
+    font: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn.primary {
+    background: #7c8cf8;
+    color: #ffffff;
+}
+
+.btn.primary:hover {
+    background: #6a7af0;
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 16px 0 24px;
+}
+
+.result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.result-label {
+    min-width: 190px;
+}
+
+.bar {
+    flex: 1;
+    height: 14px;
+    background: #f1f3f5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 8px;
+}
+
+.bar-positive {
+    background: #4caf50;
+}
+
+.bar-neutral {
+    background: #ffb300;
+}
+
+.bar-negative {
+    background: #f44336;
+}
+
+a {
+    color: #7c8cf8;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.link-btn {
+    border: 0;
+    background: none;
+    color: #7c8cf8;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+}
+
+.link-btn:hover {
+    text-decoration: underline;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.auth-form label {
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.auth-form input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font: inherit;
+    margin-bottom: 8px;
+}
+
+.auth-form input:focus {
+    outline: 2px solid #7c8cf8;
+    border-color: transparent;
+}
+
+.auth-hint {
+    color: #6b7280;
+    margin: 0;
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin: 4px 0 8px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.field input[type="text"],
+.field input[type="password"] {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font: inherit;
+}
+
+.radio-group {
+    display: flex;
+    gap: 12px;
+}
+
+.radio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.radio input {
+    margin: 0;
+}
+
+.field select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font: inherit;
+    background: #fff;
+}
+
+.help {
+    color: #9ca3af;
+    font-size: 0.85rem;
+}
+
+table.patients,
+table.records {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+table.patients th,
+table.patients td,
+table.records th,
+table.records td {
+    border: 1px solid #e5e7eb;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+table.patients th,
+table.records th {
+    background: #f3f4f6;
+}
+
+.heatmap {
+    overflow-x: auto;
+    margin: 8px 0 16px;
+}
+
+.heatmap-months {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.month-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.month-head {
+    font-size: 0.85rem;
+    color: #6b7280;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.month-cells {
+    display: grid;
+    grid-template-rows: repeat(31, 15px);
+    gap: 3px;
+    justify-items: center;
+}
+
+.heatmap-day {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.heatmap-day.empty {
+    visibility: hidden;
+}
+
+.heatmap-day.none,
+.heatmap-day.none {
+    background: #ebedf0;
+}
+
+.heatmap-day.neg {
+    background: #e53935;
+}
+
+.heatmap-day.neu {
+    background: #fbc02d;
+}
+
+.heatmap-day.pos {
+    background: #43a047;
+}
+
+.heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-end;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.heatmap-stats {
+    color: #4b5563;
+    margin: 4px 0 16px;
+}
+
+.monthly-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 8px 0 16px;
+}
+
+.monthly-row {
+    display: grid;
+    grid-template-columns: 34px 1fr 24px 48px;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.monthly-name {
+    color: #4b5563;
+}
+
+.monthly-bar {
+    height: 10px;
+    background: #f1f3f5;
+    border-radius: 6px;
+    overflow: hidden;
+    display: block;
+}
+
+.monthly-fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.mood-none {
+    background: #ebedf0;
+}
+
+.mood-neg {
+    background: #e53935;
+}
+
+.mood-neu {
+    background: #fbc02d;
+}
+
+.mood-pos {
+    background: #43a047;
+}
+
+.monthly-emoji {
+    text-align: center;
+}
+
+.monthly-days {
+    color: #9ca3af;
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.topbar-link {
+    margin-left: 12px;
+}

@@ -1,0 +1,49 @@
+{% extends "quiz/base.html" %}
+
+{% block card_class %}card-wide{% endblock %}
+
+{% block title %}Ответы пациента {{ patient.username }}{% endblock %}
+
+{% block content %}
+<p class="progress"><a href="{% url 'home' %}">← К моим пациентам</a></p>
+<h1>Ответы: {{ patient.username }}</h1>
+<h2>Отдельные ответы и ревизии</h2>
+<ul>{% for run in survey_runs %}<li><a href="{% url 'survey_detail' run.pk %}">{{ run.started_at|date:"d.m.Y H:i" }} · {{ run.status }}</a></li>{% empty %}<li>Новых прохождений пока нет.</li>{% endfor %}</ul>
+
+<p>Исторические агрегаты демонстрационного опроса. Это не клиническая оценка; отдельных ответов в старых записях нет.</p>
+<h2>Активность за год</h2>
+{% include "quiz/_activity_heatmap.html" %}
+
+{% if records %}
+<h2>История прохождений</h2>
+<table class="records">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>😄</th>
+            <th>😐</th>
+            <th>😞</th>
+            <th>Итог</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.created_at|date:"d.m.Y H:i" }}</td>
+            <td>{{ record.positive_count }}</td>
+            <td>{{ record.neutral_count }}</td>
+            <td>{{ record.negative_count }}</td>
+            <td>
+                {% with total=record.positive_count|add:record.neutral_count|add:record.negative_count %}
+                {{ record.positive_count }} / {{ record.neutral_count }} / {{ record.negative_count }} ({{ total }})
+                {% endwith %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Пациент ещё не проходил тест.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "quiz/base.html" %}
+
+{% block title %}Вопрос {{ question.order }} из {{ question_count }}{% endblock %}
+
+{% block content %}
+<p>Технический демонстрационный опрос. Не является клинической шкалой.</p>
+<p class="progress">Вопрос {{ question.order }} из {{ question_count }}</p>
+<h1>{{ question.text }}</h1>
+<form method="post">
+    {% csrf_token %}
+<input type="hidden" name="run_id" value="{{ run_id }}">
+    <div class="moods">
+        {% for value, emoji, label in moods %}
+        <button type="submit" name="value" value="{{ value }}" class="mood">
+            <span class="emoji">{{ emoji }}</span>
+            <span class="mood-label">{{ label }}</span>
+        </button>
+        {% endfor %}
+    </div>
+</form>
+<p class="progress"><a href="{% url 'home' %}">Начать заново</a></p>
+{% endblock %}

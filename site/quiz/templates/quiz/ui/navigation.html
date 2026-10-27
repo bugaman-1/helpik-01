@@ -1,0 +1,9 @@
+{% if active_role == 'doctor' %}
+<a class="nav-item {% if ui_screen != 'settings' %}active{% endif %}" href="{% if preview %}{{ nav.doctor }}{% else %}{% url 'home' %}{% endif %}"><svg><use href="#i-users"/></svg><span>Пациенты</span></a>
+{% elif active_role == 'moderator' %}
+<a class="nav-item {% if ui_screen == 'moderator' %}active{% endif %}" href="{% if preview %}{{ nav.moderator }}{% else %}{% url 'home' %}{% endif %}"><svg><use href="#i-shield"/></svg><span>Доступ</span></a><a class="nav-item" href="{% url 'create_doctor' %}"><svg><use href="#i-users"/></svg><span>Врачи</span></a><a class="nav-item" href="{% url 'audit_log' %}"><svg><use href="#i-clipboard"/></svg><span>Журнал</span></a>
+{% else %}
+<a class="nav-item {% if ui_screen == 'today' %}active{% endif %}" href="{% if preview %}{{ nav.today }}{% else %}{% url 'home' %}{% endif %}"><svg><use href="#i-home"/></svg><span>Сегодня</span></a>
+<a class="nav-item {% if ui_screen == 'contact' %}active{% endif %}" href="{% if preview %}{{ nav.contact }}{% else %}{% url 'contact' %}{% endif %}"><svg><use href="#i-chat"/></svg><span>Связь</span></a>
+{% endif %}
+<a class="nav-item {% if ui_screen == 'settings' %}active{% endif %}" href="{% url 'settings' %}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span>Настройки</span></a>

@@ -1,0 +1,9 @@
+{% extends "quiz/base.html" %}{% block content %}
+<h1>Моя карточка</h1><p><a href="{% url 'activity' %}">История и активность</a></p>
+{% if demo_enabled %}<p>Изолированное техническое демо. Используйте только синтетические ответы. Это не оценка здоровья.</p>
+{% url 'surveys' as survey_url %}
+{% if survey_url %}<p><a class="btn" href="{{ survey_url }}">Опросы и сохранённые ответы</a></p>
+{% else %}<form method="post" action="{% url 'start_survey' %}">{% csrf_token %}<input type="hidden" name="idempotency_key" value="{{ start_key }}"><button class="btn">Начать демонстрационный опрос</button></form>{% endif %}
+{% else %}<p>Клинический опрос ещё не опубликован. История сохранена.</p>{% endif %}
+<p>Сайт доступен, пока работает сервер. Круглосуточный клинический ответ не предусмотрен.</p>
+{% endblock %}

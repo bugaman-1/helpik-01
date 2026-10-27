@@ -1,0 +1,27 @@
+{% extends "quiz/base.html" %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<p class="progress">Готово!</p>
+<h1>Статистика по смайликам</h1>
+<p class="progress">Твоё прохождение · Всего смайликов: {{ total }}</p>
+
+{% if total %}
+<div class="results">
+    {% for row in rows %}
+    <div class="result">
+        <span class="emoji">{{ row.emoji }}</span>
+        <span class="result-label">{{ row.label }} — {{ row.count }} ({{ row.percent }}%)</span>
+        <div class="bar">
+            <div class="bar-fill bar-{{ row.value }}" style="width: {{ row.percent }}%"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>Ответов пока нет.</p>
+{% endif %}
+
+<p><a href="{% url 'activity' %}">Моя активность</a> · <a href="{% url 'home' %}">Пройти опрос ещё раз</a></p>
+{% endblock %}

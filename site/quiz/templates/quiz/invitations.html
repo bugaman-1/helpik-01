@@ -1,0 +1,13 @@
+{% extends "quiz/base.html" %}
+{% block content %}<div class="admin-list"><h1>Пригласить пациента</h1><p>Передайте пациенту код. После регистрации он автоматически прикрепится к вам.</p>
+{% if doctor_invite %}<p>Перед выдачей приглашения завершите предусмотренную организацией проверку квалификации и личности. Приглашение только оформляет допуск.</p>{% endif %}
+<form method="post">{% csrf_token %}
+{% if doctor_invite %}<label>Основание допуска / ссылка на административную проверку<input name="qualification_reference" required maxlength="500"></label>{% endif %}
+<button class="btn">Создать одноразовое приглашение на 48 часов</button></form>
+{% if token %}<section><h2>Код показан только сейчас</h2><p>Передайте лично адресату по согласованному защищённому каналу.</p>
+<label>Код<input value="{{ token }}" readonly autocomplete="off"></label>
+<label>Ссылка<input value="{{ invite_link }}" readonly autocomplete="off"></label>
+</section>{% endif %}
+{% for item in invitations %}<p>№{{ item.pk }} · {{ item.get_role_display }} · до {{ item.expires_at }} · {% if item.used_at %}использовано{% elif item.revoked_at %}отозвано{% else %}не использовано (срок проверяется при обмене){% endif %}</p>
+{% if not item.used_at and not item.revoked_at %}<form method="post" action="{% url 'revoke_invitation' item.pk %}">{% csrf_token %}<input name="reason" aria-label="Причина отзыва приглашения" placeholder="Причина отзыва" maxlength="500" required><button>Отозвать</button></form>{% endif %}{% endfor %}
+</div>{% endblock %}

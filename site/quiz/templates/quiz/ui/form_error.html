@@ -1,0 +1,1 @@
+{% extends 'quiz/base.html' %}{% block content %}<section class="panel"><h1>Проверьте данные</h1><form method="post" class="auth-form">{% csrf_token %}{{ form.as_p }}<button class="primary">Повторить сохранение</button></form><p><a href="{% url 'home' %}">Вернуться на главную</a></p></section>{% endblock %}

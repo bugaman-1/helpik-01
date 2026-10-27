@@ -1,0 +1,5 @@
+{% extends "quiz/base.html" %}
+{% block content %}<h1>Новый наблюдающий врач</h1>
+<p>Разрешить врачу {{ doctor.username }} доступ к вашей карточке? Ваша учётная запись и история сохранятся.</p>
+<form method="post">{% csrf_token %}<button class="btn" name="confirm" value="yes">Подтвердить связь</button></form>
+<a href="{% url 'home' %}">Не принимать</a>{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "quiz/base.html" %}{% block content %}<section class="panel"><h2>Самочувствие сегодня</h2><p class="muted">26 вопросов: самочувствие сегодня и тревога прямо сейчас.</p><form method="post" action="{% url 'screening_start' %}">{% csrf_token %}<button class="primary">Начать или продолжить опрос</button></form></section><div class="admin-list">
+<div class="page-heading"><h1>Мои опросы</h1></div>
+<h2>Назначения</h2>
+{% for row in assignments %}<section><h3>{{ row.assignment.version.questionnaire.title }}</h3>
+<p>{{ row.assignment.observation_start|date:"j E Y" }} · доступен до {{ row.assignment.available_until|date:"j E, H:i" }}</p>
+<form method="post" action="{% url 'survey_assignment_start' row.assignment.pk %}">{% csrf_token %}<input type="hidden" name="key" value="{{ row.key }}"><button class="btn primary">Открыть опрос</button></form>
+{% if row.assignment.unscheduled_limit %}<form method="post" action="{% url 'survey_assignment_start' row.assignment.pk %}">{% csrf_token %}<input type="hidden" name="key" value="{{ row.extra_key }}"><input type="hidden" name="mode" value="unscheduled"><button class="btn">Ещё одно прохождение</button></form>{% endif %}</section>
+{% empty %}<section><p>Дополнительных опросов пока нет.</p></section>{% endfor %}
+<h2>Мои ответы</h2>{% for run in runs %}<a class="record-card" href="{% url 'survey_detail' run.pk %}"><span class="badge neutral">{{ run.status_label }}</span><h3>{{ run.questionnaire_version.questionnaire.title }}</h3><p>{{ run.started_at|date:"j E Y, H:i" }}</p></a>{% empty %}<p>Записей пока нет.</p>{% endfor %}
+
+</div>{% endblock %}

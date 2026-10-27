@@ -1,0 +1,25 @@
+{% extends "quiz/base.html" %}{% block content %}<div class="admin-list">
+<h1>Доступ и наблюдение</h1>
+<p><a href="{% url 'create_doctor' %}">Добавить врача</a> · <a href="{% url 'audit_log' %}">Журнал оснований</a></p>
+<p>Перед допуском врача проверьте личность и квалификацию по процедуре организации. Не записывайте медицинские сведения в основания изменений.</p>
+{% if demo_survey_enabled %}<details class="panel"><summary>Дополнительный авторский дневник</summary><p>Прежний дневник из 17 вопросов можно назначать отдельно. Основной опрос по PHQ-9 и GAD-7 доступен пациенту на главной.</p><form method="post" action="{% url 'care_prepare_survey' %}">{% csrf_token %}<button>Подготовить дневник</button></form></details>{% endif %}<h2>Врачи</h2>
+{% for d in doctors %}<section><h3>{{ d.user.username }} — {{ d.get_verification_status_display }}</h3>
+<form method="post" action="{% url 'verify_doctor' d.user_id %}">{% csrf_token %}
+<input name="reason" aria-label="Основание проверки или отзыва" placeholder="Основание проверки / отзыва" required maxlength="500">
+<button name="status" value="approved">Проверка завершена: допустить</button><button name="status" value="revoked">Отозвать допуск</button></form></section>{% endfor %}
+<h2>Пациенты и наблюдение</h2>
+{% for p in patients %}<section><h3>{{ p.user.username }}</h3>
+{% for rel in p.user.care_doctors.all %}
+<p>{{ rel.doctor.username }} · {{ rel.get_status_display }} · {% if rel.is_primary %}ответственный{% else %}наблюдающий{% endif %}{% if not rel.started_at %} · начало связи неизвестно (наследие){% endif %}</p>
+{% if rel.status == 'active' %}<form method="post" action="{% url 'detach_doctor' p.user_id rel.doctor_id %}">{% csrf_token %}
+<input name="reason" aria-label="Причина открепления" placeholder="Причина открепления" required maxlength="500">
+<label>Передать ответственность<select name="replacement_id"><option value="">Не передавать</option>{% for candidate in p.user.care_doctors.all %}{% if candidate.status == 'active' and candidate.doctor_id != rel.doctor_id and candidate.doctor.profile.verification_status == 'approved' %}<option value="{{ candidate.doctor_id }}">{{ candidate.doctor.username }}</option>{% endif %}{% endfor %}</select></label>
+<label><input type="checkbox" name="end_care" value="yes">Явно завершить последнее наблюдение, если открытых сигналов нет</label>
+<button>Открепить</button></form>{% endif %}{% endfor %}
+<form method="post" action="{% url 'attach_doctor' p.user_id %}">{% csrf_token %}
+<select aria-label="Врач для прикрепления" name="doctor_id" required>{% for d in doctors %}{% if d.verification_status == 'approved' %}<option value="{{ d.user_id }}">{{ d.user.username }}</option>{% endif %}{% endfor %}</select>
+<input name="reason" aria-label="Основание изменения связи" placeholder="Основание изменения связи" required maxlength="500"><button>Прикрепить</button></form>
+<form method="post" action="{% url 'transfer_responsibility' p.user_id %}">{% csrf_token %}
+<label>Ответственный врач<select name="doctor_id" required><option value="">Выбрать активного допущенного врача</option>{% for candidate in p.user.care_doctors.all %}{% if candidate.status == 'active' and candidate.doctor.profile.verification_status == 'approved' %}<option value="{{ candidate.doctor_id }}">{{ candidate.doctor.username }}</option>{% endif %}{% endfor %}</select></label>
+<input name="reason" aria-label="Основание передачи" placeholder="Основание передачи" required maxlength="500"><button>Назначить ответственным и передать сигналы</button></form>
+</section>{% endfor %}</div>{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">{% endblock %}
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block content %}<div id="content-main">
+<div class="module"><h2>Управление наблюдением</h2><div style="padding:16px">
+<p><a href="{% url 'home' %}">Допуск врачей и привязки пациентов</a> · <a href="{% url 'invitations' %}">Приглашения</a> · <a href="{% url 'audit_log' %}">Журнал действий</a></p>
+<p>Аккаунты и пароли управляются в разделе «Пользователи». Ответы, схемы лечения, сообщения и журнал доступны здесь для просмотра. Изменения наблюдения выполняются через указанные выше разделы, назначения — в кабинете наблюдающего врача.</p>
+</div></div>
+{% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>{% endblock %}

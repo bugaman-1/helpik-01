@@ -1,0 +1,9 @@
+{% extends 'quiz/base.html' %}{% block title %}Регистрация пациента · Компас{% endblock %}{% block content %}
+<h1>Создать аккаунт</h1>
+<nav class="chips" aria-label="Роль при регистрации"><a class="chip selected" href="{% url 'register_patient' %}" aria-current="page">Я пациент</a><a class="chip" href="{% url 'register_doctor' %}">Я врач</a></nav>
+<p class="muted">Врача можно добавить позже.</p>
+<form method="post" class="auth-form">{% csrf_token %}{{ form.non_field_errors }}
+{% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}{{ field.errors }}</div>{% endfor %}
+<button type="submit" class="primary">Создать аккаунт пациента</button></form>
+<p class="auth-hint"><a href="{% url 'invitation_exchange' %}">Есть код от врача</a> · <a href="{% url 'login' %}">Уже есть аккаунт</a></p>
+{% endblock %}

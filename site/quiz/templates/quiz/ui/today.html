@@ -1,0 +1,19 @@
+{% extends 'quiz/base.html' %}{% block title %}Сегодня · Компас{% endblock %}{% block content %}
+<div class="page-heading"><p class="eyebrow">{{ today|date:'j E, l' }}</p><h1>Здравствуйте, {{ ui_name }}.</h1></div>
+<section class="hero compact-hero"><div><span class="eyebrow">САМОЧУВСТВИЕ</span>
+{% if screening_completed %}<h2>Опрос заполнен</h2><p>Последний опрос завершён {{ screening_run.started_at|date:'j E' }}. Ответы доступны вашим врачам.</p><a class="btn white" href="{% url 'survey_detail' screening_run.pk %}">Мои ответы →</a>
+{% else %}<h2>Как вы себя чувствуете сегодня?</h2><p>26 вопросов о самочувствии и тревоге.</p>
+{% if preview %}<a class="btn white" href="{{ nav.survey }}">Начать опрос →</a>{% else %}<form method="post" action="{% url 'screening_start' %}">{% csrf_token %}<button class="btn white">{% if screening_run.status == 'in_progress' or screening_run.status == 'draft' %}Продолжить опрос{% else %}Начать опрос{% endif %} →</button></form>{% endif %}{% endif %}
+{% if screening_due %}<form method="post" action="{% url 'screening_start' %}" class="actions">{% csrf_token %}<button class="btn white">Пройти снова →</button></form>{% endif %}
+</div></section>
+{% if screening_completed %}{% include 'quiz/ui/_screening_result.html' %}{% endif %}
+
+{% if medicines %}<section id="medicines" class="panel"><div class="heading-row"><h2>Приём лекарств</h2><span class="muted small-text">{{ schedule_day|date:'j E' }}</span></div>
+{% if preview %}{% include 'quiz/ui/_medicines.html' %}{% else %}
+{% for row in schedule_rows %}<article class="intake-row"><div><h3>{{ row.due_at|date:'H:i' }} · {{ row.medicine.name }}</h3><p class="muted">{{ row.medicine.dose }} {{ row.medicine.unit }}{% if row.medicine.note %} · {{ row.medicine.note }}{% endif %}</p><span class="badge neutral">{{ row.status_label }}</span></div>
+{% if row.can_mark %}<form method="post" action="{% url 'care_intake' %}" class="actions">{% csrf_token %}<input type="hidden" name="prescription" value="{{ row.prescription }}"><input type="hidden" name="medication_id" value="{{ row.medication_id }}"><input type="hidden" name="due_at" value="{{ row.due_at|date:'c' }}"><button name="status" value="taken" class="primary">Принято</button><button name="status" value="skipped">Пропущено</button></form>{% else %}<p class="muted small-text">Отметка будет доступна в указанное время.</p>{% endif %}</article>{% empty %}<p class="muted">На сегодня приёмов нет.</p>{% endfor %}
+<details><summary>Все назначения и сообщение о побочном действии</summary>{% include 'quiz/ui/_care_medicines.html' %}</details>{% endif %}</section>{% endif %}
+<section id="dynamics" class="home-dynamics"><div class="heading-row"><h2>Динамика</h2><a class="text-link" href="{% url 'surveys' %}">Все опросы →</a></div>
+<div class="grid-2">{% include 'quiz/ui/_calendar.html' %}</div>
+{% if entries %}<details><summary>Посмотреть записи за выбранный период</summary>{% include 'quiz/ui/_entries.html' %}</details>{% endif %}</section>
+{% endblock %}

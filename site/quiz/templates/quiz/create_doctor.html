@@ -1,0 +1,1 @@
+{% extends 'quiz/base.html' %}{% block content %}<h1>Добавить врача</h1><p class="muted">Создайте аккаунт врача и передайте ему данные для входа. Приглашения предназначены только для пациентов.</p><form method="post" class="auth-form">{% csrf_token %}{{ form.as_p }}<button class="primary">Создать аккаунт врача</button></form>{% endblock %}
