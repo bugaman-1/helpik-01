@@ -1,0 +1,32 @@
+.brand-helpik {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.brand-title {
+    display: block;
+}
+
+.brand-logo {
+    display: block;
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+    .auth-header .brand-helpik {
+        gap: 6px;
+    }
+
+    .auth-header .brand-logo {
+        width: 78px;
+    }
+
+    .mobile-brand .brand-logo {
+        width: 48px;
+        height: 36px;
+    }
+}
